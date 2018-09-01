@@ -1,3 +1,29 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
+class Stomach(models.Model):
+    time = models.DateTimeField()
+    consistency = models.CharField(
+        max_length=255,
+        choices=(
+            ('OK', 'OK'),
+            ('QMUSHY', 'Quite mushy'),
+            ('RMUSHY', 'Really mushy'),
+            ('DIARRHEA', 'Full-on diarrhea')
+        )
+    )
+    bloodiness = models.CharField(
+        max_length=255,
+        choices=(
+            ('NONE', 'None'),
+            ('BLOT', 'Lots of bright blood'),
+            ('BSOME', 'Some bright blood'),
+            ('DLOT', 'Lots of dark blood'),
+            ('DSOME', 'Some dark blood'),
+            ('MLOT', 'Lots of blood, hard to say if it is dark or bright'),
+            ('MSOME', 'Some blood, hard to say if it is dark or bright')
+        )
+    )
+    comment = models.TextField(null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Stomach
+
+class StomachAdmin(admin.ModelAdmin):
+    exclude = ['user']
+
+admin.site.register(Stomach, StomachAdmin)
