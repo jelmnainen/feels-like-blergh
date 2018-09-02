@@ -27,3 +27,12 @@ class Stomach(models.Model):
     )
     comment = models.TextField(null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.time
+
+class Edible(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    ingredients = models.ManyToManyField('self', blank=True, related_name="ingredients")
+    def __str__(self):
+        return self.name

@@ -1,12 +1,13 @@
 from django.shortcuts import render
 import datetime
 
-from .models import Stomach
+from .models import Stomach, Edible
 
 def get_default_context():
     return {
         "consistency_choices": Stomach._meta.get_field("consistency").choices,
         "bloodiness_choices": Stomach._meta.get_field("bloodiness").choices,
+        "edibles": Edible.objects.all(),
     }
 
 def home(request):
@@ -38,3 +39,15 @@ def calculate_time(timestamp, hours, minutes):
     min_ms = minutes * 60 * 1000
     hours_ms = hours * 60 *  60 * 1000
     return (timestamp - (min_ms + hours_ms))
+
+def create_edible_record(request):
+    edible = Edible(name=request.POST['name'])
+    context = get_default_context()
+    try:
+        edible.save()
+        if 'ingredients' in request.POST:
+            edible.ingredients.set(request.POST.getlist('ingredients'))
+        context["message"] =  "Edible created!"
+    except:
+        context["message"] = "Edible creation unsuccessful"
+    return render(request, 'home.html', context)

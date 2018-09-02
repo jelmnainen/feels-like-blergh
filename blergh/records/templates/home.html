@@ -5,7 +5,7 @@
       <div>{{message}}</div>
     {% endif %}
     <div class="row">
-      <div class="col-6">
+      <div class="col-12 col-md-6">
         <h2>Add new stomach record</h2>
         <form method="post" action="{% url 'create_stomach_record' %}">
           {% csrf_token %}
@@ -54,6 +54,27 @@
           </div>
           <input type="hidden" name="timestamp" id="input-timestamp"/>
           <input type="submit" class="btn btn-primary" />
+        </form>
+      </div>
+      <div class="col-12 col-md-6">
+        <h2>Add new Edible</h2>
+        <form method="post" action="{% url 'create_edible_record' %}">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="input-edible-name">Name</label>
+            <input class="form-control" type="text" id="input-edible-name" name="name" />
+          </div>
+          <div class="form-group">
+            <label for="input-edible-ingredients">Ingredients</label>
+            <select multiple name="ingredients" id="input-edible-ingredients" class="form-control">
+              {% for choice in edibles %}
+                <option value="{{choice.id}}">{{choice.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <input type="submit" class="btn btn-primary" />
+          </div>
         </form>
       </div>
     </div>
