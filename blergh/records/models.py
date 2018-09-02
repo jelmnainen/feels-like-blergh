@@ -36,3 +36,16 @@ class Edible(models.Model):
     ingredients = models.ManyToManyField('self', blank=True, related_name="ingredients")
     def __str__(self):
         return self.name
+
+class Feeding(models.Model):
+    timestamp = models.DateTimeField()
+    food = models.ManyToManyField(Edible, related_name='food')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        foods = []
+        for food in self.food.all():
+            foods.append(str(food))
+        foodstring = ', '.join(foods)
+
+        return str(self.timestamp) + " (" + foodstring + ") "

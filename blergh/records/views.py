@@ -1,7 +1,7 @@
 from django.shortcuts import render
 import datetime
 
-from .models import Stomach, Edible
+from .models import Stomach, Edible, Feeding
 
 def get_default_context():
     return {
@@ -11,16 +11,11 @@ def get_default_context():
     }
 
 def home(request):
-
     return render(request, 'home.html', get_default_context())
 
 def create_stomach_record(request):
     context = get_default_context()
-    timestamp = (int)(request.POST['timestamp'])
-    hours = (int)(request.POST['ago-hours'])
-    minutes = (int)(request.POST['ago-minutes'])
-    print(hours, minutes, timestamp, calculate_time(timestamp, hours, minutes))
-    time = datetime.datetime.utcfromtimestamp(calculate_time(timestamp, hours, minutes))
+    time = parseAgoTime(request)
     stomach = Stomach(
         time=time,
         consistency=request.POST["consistency"],
@@ -34,12 +29,6 @@ def create_stomach_record(request):
         context["message"] = "Creation unsuccesful!"
     return render(request, 'home.html', context)
 
-
-def calculate_time(timestamp, hours, minutes):
-    min_ms = minutes * 60 * 1000
-    hours_ms = hours * 60 *  60 * 1000
-    return (timestamp - (min_ms + hours_ms))
-
 def create_edible_record(request):
     edible = Edible(name=request.POST['name'])
     context = get_default_context()
@@ -51,3 +40,30 @@ def create_edible_record(request):
     except:
         context["message"] = "Edible creation unsuccessful"
     return render(request, 'home.html', context)
+
+def create_feeding_record(request):
+    context = get_default_context()
+    if (set(['food', 'timestamp', 'ago-hours', 'ago-minutes']).issubset(request.POST)):
+        time = parseAgoTime(request)
+        food = request.POST.getlist('food')
+        feeding = Feeding(timestamp=time, user=request.user)
+        try:
+            feeding.save()
+            feeding.food.set(food)
+            context["message"] = "New feeding created!"
+        except:
+            context["message"] = "Feeding creation unsuccesful"
+    else:
+        context["message"] = "Fill all fields!"
+    return render(request, 'home.html', context)
+
+def parseAgoTime(request):
+        timestamp = (int)(request.POST['timestamp'])
+        hours = (int)(request.POST['ago-hours'])
+        minutes = (int)(request.POST['ago-minutes'])
+        return (datetime.datetime.utcfromtimestamp(calculate_time(timestamp, hours, minutes)))
+
+def calculate_time(timestamp, hours, minutes):
+    min_ms = minutes * 60 * 1000
+    hours_ms = hours * 60 *  60 * 1000
+    return (timestamp - (min_ms + hours_ms))

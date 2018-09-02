@@ -16,11 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from records.views import home, create_stomach_record, create_edible_record
+from records.views import home, create_stomach_record, create_edible_record, create_feeding_record
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home),
     path('create_stomach_record', create_stomach_record, name="create_stomach_record"),
-    path('create_edible_record', create_edible_record, name="create_edible_record")
+    path('create_edible_record', create_edible_record, name="create_edible_record"),
+    path('create_feeding_record', create_feeding_record, name="create_feeding_record")
 ]
